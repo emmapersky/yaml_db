@@ -15,6 +15,12 @@ module SerializationHelper
       reenable_logger
     end
 
+    def dump_tables(filename, tables = [])
+      disable_logger
+      @dumper.dump_tables(File.new(filename, "w"), tables)
+      reenable_logger
+    end
+
     def dump_to_dir(dirname)
       Dir.mkdir(dirname)
       tables = @dumper.tables
@@ -155,6 +161,14 @@ module SerializationHelper
 
     def self.tables
       ActiveRecord::Base.connection.tables.reject { |table| ['schema_info', 'schema_migrations'].include?(table) }
+    end
+
+    def self.dump_tables(io, tables)
+      tables.each do |table|
+        before_table(io, table)
+        dump_table(io, table)
+        after_table(io, table)
+      end        
     end
 
     def self.dump_table(io, table)

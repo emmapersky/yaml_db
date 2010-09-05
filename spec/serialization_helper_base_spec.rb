@@ -34,6 +34,14 @@ describe SerializationHelper::Base do
       end   
 
     end
+    
+    it "should call the dumper with an array of the table to be dumped" do
+      File.should_receive(:new).once.with("file.yml", "w").and_return(@io)      
+      stub_helper!
+      @dumper.should_receive(:dump_tables).once.with(@io, ['table_a', 'table_b'])
+      
+      SerializationHelper::Base.new(@helper).dump_tables('file.yml', ['table_a', 'table_b'])
+    end
 
     context "for multi-file loads" do
 

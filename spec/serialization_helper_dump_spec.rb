@@ -60,6 +60,16 @@ describe SerializationHelper::Dump do
 		SerializationHelper::Dump.dump_table(@io, 'mytable')
     end
 
-
-
+  it "should only dump the specified tables" do
+    SerializationHelper::Dump.should_receive(:dump_table).exactly(2).times
+    
+    SerializationHelper::Dump.dump_tables(@io, ['table_a', 'table_b'])
+  end
+  
+  it "should only dump the specified tables" do
+    SerializationHelper::Dump.should_receive(:dump_table).with(@io, 'table_a')
+    
+    SerializationHelper::Dump.dump_tables(@io, ['table_a'])
+  end  
+  
 end
